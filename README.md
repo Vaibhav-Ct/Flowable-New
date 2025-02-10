@@ -38,10 +38,11 @@ The first step is to deploy a process definition. With the REST API, this is don
 curl --user rest-admin:test  -X POST -F "file=@holiday-request.bpmn20.xml" http://localhost:8080/flowable-rest/service/repository/deployments
 To verify that the process definition is deployed correctly, the list of process definitions can be requested:
 
+## Step-4
 curl --user rest-admin:test http://localhost:8080/flowable-rest/service/repository/process-definitions
 which returns a list of all process definitions currently deployed to the engine.
 
-## Step-4
+## Step-5
 Start a process instance
 Starting a process instance through the REST API is similar to doing the same through the Java API: a key is provided to identify the process definition to use along with a map of initial process variables:
 
@@ -50,14 +51,14 @@ which returns something like
 
 {"id":"43","url":"http://localhost:8080/flowable-rest/service/runtime/process-instances/43","businessKey":null,"suspended":false,"ended":false,"processDefinitionId":"holidayRequest:1:42","processDefinitionUrl":"http://localhost:8080/flowable-rest/service/repository/process-definitions/holidayRequest:1:42","activityId":null,"variables":[],"tenantId":"","completed":false}
 
-## Step-5
+## Step-6
 Task list and completing a task
 When the process instance is started, the first task is assigned to the 'managers' group. To get all tasks for this group, a task query can be done through the REST API:
 
 curl --user rest-admin:test -H "Content-Type: application/json" -X POST -d '{ "candidateGroup" : "managers" }' http://localhost:8080/flowable-rest/service/query/tasks
 which returns a list of all tasks for the 'managers' group
 
-## Step-6
+## Step-7
 Such a task can now be completed using:
 
 curl --user rest-admin:test -H "Content-Type: application/json" -X POST -d '{ "action" : "complete", "variables" : [ { "name" : "approved", "value" : true} ]  }' http://localhost:8080/flowable-rest/service/runtime/tasks/25
@@ -65,5 +66,5 @@ However, you most likely will get an error like:
 
 {"message":"Internal server error","exception":"couldn't instantiate class org.flowable.CallExternalSystemDelegate"}
 
-## Step-7
+## Step-8
 This means that the engine couldn’t find the CallExternalSystemDelegate class that is referenced in the service task. To solve this, the class needs to be put on the classpath of the application (which will require a restart). Create the class as described in this section, package it up as a JAR and put it in the WEB-INF/lib folder of the flowable-rest folder under the webapps folder of Tomcat.
