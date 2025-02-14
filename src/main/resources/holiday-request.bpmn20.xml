@@ -14,13 +14,16 @@
     <process id="holidayRequest" name="Holiday Request" isExecutable="true">
 
         <startEvent id="startEvent"/>
-        <sequenceFlow sourceRef="startEvent" targetRef="approveTask"/>
+        <sequenceFlow sourceRef="startEvent" targetRef="UserInput"/>
 
-        <userTask id="approveTask" name="Approve or reject request" flowable:candidateGroups="managers"/>
+        <userTask id="UserInput" name="User Input" flowable:candidateGroups="user"/>
+        <sequenceFlow sourceRef="UserInput" targetRef="approveTask"/>
+
+        <userTask id="approveTask" name="Approve or reject request" flowable:candidateGroups="manager"/>
         <sequenceFlow sourceRef="approveTask" targetRef="decision"/>
 
         <exclusiveGateway id="decision"/>
-        <sequenceFlow sourceRef="decision" targetRef="externalSystemCall">
+        <sequenceFlow sourceRef="decision" targetRef="sendApprovalMail">
             <conditionExpression xsi:type="tFormalExpression">
                 <![CDATA[
           ${approved}
@@ -35,9 +38,9 @@
             </conditionExpression>
         </sequenceFlow>
 
-        <serviceTask id="externalSystemCall" name="Enter holidays in external system"
-                     flowable:class="org.flowable.holidayrequest.CallExternalSystemDelegate"/>
-        <sequenceFlow sourceRef="externalSystemCall" targetRef="approveEnd"/>
+        <serviceTask id="sendApprovalMail" name="Enter holidays in external system"
+                     flowable:class="org.flowable.holidayrequest.SendApprovalMail"/>
+        <sequenceFlow sourceRef="sendApprovalMail" targetRef="approveEnd"/>
 
 <!--        <userTask id="holidayApprovedTask" name="Holiday approved" flowable:assignee="${employee}"/>-->
 <!--        <sequenceFlow sourceRef="holidayApprovedTask" targetRef="approveEnd"/>-->
