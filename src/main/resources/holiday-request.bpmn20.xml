@@ -14,12 +14,9 @@
     <process id="holidayRequest" name="Holiday Request" isExecutable="true">
 
         <startEvent id="startEvent"/>
-        <sequenceFlow sourceRef="startEvent" targetRef="UserInput"/>
+        <sequenceFlow sourceRef="startEvent" targetRef="approveTask"/>
 
-        <userTask id="UserInput" name="User Input" flowable:candidateGroups="user"/>
-        <sequenceFlow sourceRef="UserInput" targetRef="approveTask"/>
-
-        <userTask id="approveTask" name="Approve or reject request" flowable:candidateGroups="manager"/>
+        <userTask id="approveTask" name="Approve or reject request" flowable:assignee="John"/>
         <sequenceFlow sourceRef="approveTask" targetRef="decision"/>
 
         <exclusiveGateway id="decision"/>
@@ -41,9 +38,6 @@
         <serviceTask id="sendApprovalMail" name="Enter holidays in external system"
                      flowable:class="org.flowable.holidayrequest.SendApprovalMail"/>
         <sequenceFlow sourceRef="sendApprovalMail" targetRef="approveEnd"/>
-
-<!--        <userTask id="holidayApprovedTask" name="Holiday approved" flowable:assignee="${employee}"/>-->
-<!--        <sequenceFlow sourceRef="holidayApprovedTask" targetRef="approveEnd"/>-->
 
         <serviceTask id="sendRejectionMail" name="Send out rejection email"
                      flowable:class="org.flowable.holidayrequest.SendRejectionMail"/>
